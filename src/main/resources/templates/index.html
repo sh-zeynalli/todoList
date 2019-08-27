@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDos</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/css/bootstrap-select.min.css">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css">
+
+    <!-- DataTables JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
+    <script th:src="@{/js/internal/action.js}"></script>
+
+
+</head>
+<body>
+<div class="form-group">
+    <h1>To-Do
+        <small>List</small>
+    </h1>
+    <button id="showTodoModal" type="button" class="btn btn btn-primary">Add To-Do</button>
+    <button type="button" class="btn btn btn-primary" id="categorybtn">Categories</button>
+    <button type="button" class="btn btn btn-primary" id="priorityBtn">Priority</button>
+    <button type="button" class="btn btn btn-primary" id="doneBtn">Done</button>
+</div>
+<div></div>
+
+<!--main_table-->
+<div class="container">
+    <table class="table" id="todo_list" cellpadding="0" align="center" width="80%">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Task</th>
+            <th scope="col" class="text-center">Priority</th>
+            <th scope="col" class="text-center">Category</th>
+            <th scope="col" class="text-center">Deadline</th>
+            <th scope="col" class="text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr align="center">
+            <td>
+                <i class="fas fa-search"></i>
+            </td>
+            <td>
+                <input placeholder="task" id="searchTask" class="form-control"
+                       style="width: 100px; font-style: italic">
+            </td>
+            <td>
+                <input placeholder="priority" id="searchPriority" class="form-control"
+                       style="width: 100px; font-style: italic">
+            </td>
+            <td>
+                <input placeholder="category" id="searchCategory" class="form-control"
+                       style="width: 100px; font-style: italic">
+            </td>
+            <td>
+                <input placeholder="deadline" id="searchDeadline" class="form-control date-picker-popup" type="date"
+                       style="width: 135px; font-style: italic ">
+            </td>
+            <td>
+                <button id="searchBtn" type="button" class="btn btn btn-primary" text="Search"
+                        style="font-style: italic; width: 125px; height: 32px; background: dimgray; border-color: inherit">
+                    Search
+                </button>
+            </td>
+        </tr>
+        <tr th:each="todoList, id: ${todoList}" align="center">
+            <!--new: th:class id.count id.index-->
+            <td th:unless="${ todoList.status}" th:text="${id.count}"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.task}"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.priority}"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.category}"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.deadline}" data-th-date="${todoList.deadline}"></td>
+            <td th:unless="${ todoList.status}">
+                <a th:href="@{/done/{id}(id=${todoList.id})}" type="button" class="btn btn btn-primary"
+                   style="background: forestgreen; border-color: inherit"
+                   id="doneTaskBtn"><i class="fas fa-calendar-check" aria-hidden="true"></i></a>
+                <a type="button" data-th-id="${todoList.id}" data-th-task="${todoList.task}"
+                   data-th-priority="${todoList.priority}"
+                   data-th-category="${todoList.category}"
+                   data-th-deadline="${todoList.deadline}"
+                   class="editBtn btn btn btn-primary" style="background: orange; border-color: inherit"
+                   id="editBtn"><i class="far fa-edit"></i></a>
+
+                <a type="button" data-th-id="${todoList.id}" class="deleteBtn btn btn btn-primary"
+                   style="background: #ac2925; border-color: inherit"
+                   id="deleteBtn"><i class="fas fa-trash-alt"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="text-align: center;">
+    <span th:text="${message}" style="
+          font-size: x-large;
+          color: hotpink;
+          font-family: Segoe UI Light;"></span>
+    </div>
+</div>
+
+<!--delete_modal-->
+<div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <input type="hidden" name="">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/delete}">
+                    <input type="hidden" id="todo_id" value="">
+
+                    <!--<label for="personId">ID</label><input th:value="*{id}" id="personId" name="id" type="number" class="form-control">-->
+                    <label>Are you sure you want to delete this To-Do?</label><br>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-danger" data-dismiss="modal"
+                   id="delselectedTodo">Delete</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--add todo_modal-->>
+<div class="modal fade" id="todoModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add To-Do</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/addTodo}" th:object="${todo}">
+                    <!--<label for="personId">ID</label><input th:value="*{id}" id="personId" name="id" type="number" class="form-control">-->
+                    <label for="task">Task</label>
+                    <input id="task" name="task" th:value="*{task}" th:field="*{task}"
+                           type="text" class="form-control" th:errorclass="fieldError"><br>
+                    <span id="emptyTask" style="color: red"></span>
+                    <br>
+                    <label>Priority</label><br>
+                    <div class="container">
+                        <select class="selectpicker" th:field="*{priority}" data-style="btn-primary" multiple
+                                data-max-options="1" id="priority" th:value="*{priority}">
+                            <option th:each="priority: ${priority}" th:text="${priority.name}"
+                                    th:value="${priority.name}"></option>
+                        </select>
+                    </div>
+                    <span id="emptyPriority" style="color: red"></span><br>
+                    <br>
+                    <label>Category</label><br>
+                    <div class="container">
+                        <select class="selectpicker" th:field="*{category}" data-style="btn-primary" multiple
+                                data-max-options="1" id="category" th:value="*{category}">
+                            <option th:each="category: ${category}" th:text="${category.name}"
+                                    th:value="${category.name}"></option>
+                        </select>
+                    </div>
+                    <span id="emptyCategory" style="color: red"></span><br>
+                    <br>
+                    <label for="dueDate">Due Date</label><br><input id="dueDate" name="dueDate" type="date"
+                                                                    class="form-control date-picker"
+                                                                    th:value="*{deadline}">
+                    <span id="emptyDate" style="color: red"></span>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveTodobtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--edit_modal-->
+<div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit To-Do</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/editTodo}" th:object="${todo}">
+                    <input type="hidden" id="edit_id" value="">
+                    <label>Task</label>
+                    <input id="edittask" name="task" th:value="*{task}"
+                           type="text" class="form-control"><br>
+                    <span th:errors="*{task}" class="error"></span>
+
+                    <span id="emptyEditTask" style="color: red"></span><br>
+
+                    <label>Priority</label>
+                    <div class="container">
+                        <select class="selectpicker" th:field="*{priority}" data-style="btn-primary" multiple
+                                data-max-options="1" th:value="*{priority}" id="editpriority" name="editpriority">
+                            <option th:each="priority: ${priority}" th:text="${priority.name}"
+                                    th:value="${priority.name}"></option>
+                        </select>
+                    </div>
+                    <span id="emptyEditPriority" style="color: red"></span><br>
+
+                    <br>
+                    <label>Category</label>
+                    <div class="container">
+                        <select class="selectpicker" id="editcategory" th:field="*{category}" data-style="btn-primary"
+                                multiple
+                                data-max-options="1" th:value="*{category}">
+                            <option th:each="category: ${category}" th:text="${category.name}"
+                                    th:value="${category.name}"></option>
+                        </select>
+                    </div>
+
+                    <span id="emptyEditCategory" style="color: red"></span><br>
+                    <br>
+                    <label>Due Date</label>
+                    <input id="editDate" name="dueDate"
+                           th:value="*{deadline}" type="text" class="form-control">
+
+                    <span id="emptyEditDate" style="color: red"></span>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="editTodobtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--add_todo-->
+<script th:inline="javascript">
+    $(document).ready(function () {
+            $("#showTodoModal").click(function () {
+                $('#todoModal').modal('show');
+                $("#emptyTask").html("");
+                $("#emptyPriority").html("");
+                $("#emptyCategory").html("");
+                $("#emptyDate").html("");
+                $("#task").val("");
+                $("#dueDate").val("");
+                $("#priority").val("").change();
+                $("#category").val("").change();
+
+            });
+            $('#saveTodobtn').click(function () {
+                var task = $('#task').val();
+                var priority = $('#priority').val();
+                var category = $('#category').val();
+                var dueDate = $('#dueDate').val();
+
+                $.ajax({
+                    url: 'addTodo',
+                    method: 'post',
+                    data: 'task=' + task + '&priority=' + priority + '&category=' + category + '&deadline=' + dueDate,
+                    dataType: 'json',
+                    success: function (response) {
+
+                        if (response.code == 200) {
+                            alert(response.message)
+                            console.log("added");
+                            window.location.reload();
+                        }
+                        else {
+                            alert(response.message)
+                        }
+                    }
+                    ,
+                    error: function (res) {
+                        console.log("ajax error");
+                    }
+                })
+
+            })
+        }
+    )
+</script>
+
+<!--edit_todo-->
+<script>
+    $(document).ready(function () {
+            $(document).on("click", ".editBtn", function () {
+
+                $("#editModal").modal('show');
+                $("#emptyEditTask").html("");
+                $("#emptyEditPriority").html("");
+                $("#emptyEditCategory").html("");
+                $("#emptyEditDate").html("");
+
+                var edit_id = $(this).attr('id');
+                $(".modal-body #edit_id").val(edit_id);
+
+                var edit_name = $(this).attr('task');
+                $("#edittask").val(edit_name);
+
+                var edit_priority = $(this).attr('priority');
+                $("#editpriority").val(edit_priority).change();
+
+                var edit_category = $(this).attr('category');
+                $("#editcategory").val(edit_category).change();
+
+                var edit_deadline = $(this).attr('deadline');
+                $("#editDate").datepicker();
+                $("#editDate").val(edit_deadline);
+
+            });
+
+            $("#editTodobtn").click(function () {
+                var editid = $('#edit_id').val();
+                var edittask = $('#edittask').val();
+                var editpriority = $('#editpriority').val();
+                var editcategory = $('#editcategory').val();
+                var d = new Date($('#editDate').val());
+                var editdueDate = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+
+                console.log(editdueDate);
+
+                $.ajax({
+
+                    url: 'editTodo',
+                    method: 'get',
+                    data: 'id=' + editid + '&task=' + edittask + '&priority=' + editpriority + '&category=' + editcategory + '&deadline=' + editdueDate,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.code == 200) {
+                            alert(response.message)
+                            window.location.reload();
+                        }
+                        else {
+                            alert(response.message);
+                        }
+                    }
+                    ,
+
+                    error: function (res) {
+                        console.log("ajax error");
+                    }
+                })
+            })
+        }
+    )
+</script>
+
+<!--todo_done-->
+<script>
+    $(document).ready(function () {
+        $("#doneTaskBtn").click(function () {
+            alert("Task was succesfully added to done tasks list!");
+        });
+    });
+</script>
+
+<!--todo_delete-->
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".deleteBtn", function () {
+            var todo_id = $(this).attr('id');
+            $(".modal-body #todo_id").val(todo_id);
+            $("#deleteModal").modal('show');
+        });
+        $("#delselectedTodo").click(function () {
+            var id = $('#todo_id').val();
+            console.log(id);
+            $.get("/home/deleteTodo/" + id, function (data) {
+                location.reload();
+            })
+        });
+    })
+</script>
+
+<!--search-->
+<script>
+    $(document).ready(function () {
+            $("#searchBtn").click(function () {
+
+                var task = $('#searchTask').val();
+                var priority = $('#searchPriority').val();
+                var category = $('#searchCategory').val();
+                //var dueDate=$('#searchDeadline').val();
+                var d = new Date($('#searchDeadline').val());
+                var dueDate = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+
+                console.log(task + " ," + priority + " ," + category + " ," + dueDate);
+                console.log(typeof  dueDate);
+                $.ajax({
+
+                    url: 'search',
+                    method: 'get',
+                    data: 'task=' + task + '&priority=' + priority + '&category=' + category + '&deadline=' + dueDate,
+                    dataType: 'json',
+                    success: function () {
+                        window.location.reload();
+                    }
+                    ,
+                    error: function () {
+                        console.log("ajax error");
+                    }
+                })
+            })
+        }
+    )
+</script>
+<!--category_page-->
+<script>
+    $(document).ready(function () {
+        $("#categorybtn").click(function () {
+            $.ajax({
+                url: 'categories',
+                method: 'get'
+            })
+            window.location.replace("http://localhost:8082/home/categories/");
+        })
+    })
+</script>
+
+<!--done_page-->
+<script>
+    $(document).ready(function () {
+        $("#doneBtn").click(function () {
+            $.ajax({
+                url: 'done',
+                method: 'get'
+            })
+            window.location.replace("http://localhost:8082/home/done/");
+        })
+    })
+</script>
+
+<!--priority_page-->
+<script>
+    $(document).ready(function () {
+        $("#priorityBtn").click(function () {
+            $.ajax({
+                url: 'priorities',
+                method: 'get'
+            })
+            window.location.replace("http://localhost:8082/home/priorities/");
+        })
+    })
+</script>
+
+</body>
+</html>

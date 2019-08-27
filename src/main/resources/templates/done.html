@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Done</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/css/bootstrap-select.min.css">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+    <!-- DataTables JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
+    <script th:src="@{/js/internal/action.js}"></script>
+
+</head>
+<body>
+
+<div class="form-group">
+
+    <h1>Done tasks<small> List</small></h1>
+    <button type="button" class="btn btn btn-primary" id="mainBtn">Main Page</button>
+    <!--<button id="showPriorityModal" type="button" class="btn btn btn-primary">Add Priority</button>-->
+
+</div>
+
+<!--table-->
+<div class="container">
+    <table class="table" id="todo_list"  cellpadding="0" align="center" width="80%">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Task</th>
+            <th>End Date</th>
+        </tr>
+        <label id="n"></label>
+        </thead>
+        <tbody>
+
+        <tr th:each="todo,id: ${todoList}">
+            <td th:if="${todo.status}" th:text="${id.count}"></td>
+            <td th:if="${todo.status}" th:text="${todo.task}"></td>
+            <td th:if="${todo.status}" th:text="${todo.deadline}"></td>
+            <td th:if="${todo.status}">
+                <a th:href="@{/done/restore/{id}(id=${todo.id})}" type="button" class="btn btn btn-primary" style="background: forestgreen; border-color: inherit"
+                   id="restoreBtn"><i class="fas fa-undo"></i></a>
+            </td>
+        </tr>
+
+        <!--</c:forEach>-->
+        </tbody>
+    </table>
+    <div style=" text-align: center;">
+    <span th:text="${doneMessage}" style="
+          font-size: x-large;
+          color: hotpink;
+          font-family: Segoe UI Light;"></span>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        for (var i=0; i<document.getElementById("todo_list").rows.length; i++){
+           if($(this).attr('status')==1) {
+               $("#n").val("You do not have any completed task");
+               break;
+           }
+           break;
+        }
+    })
+</script>
+
+<!--main page-->
+<script>
+    $(document).ready(function () {
+        $("#mainBtn").click( function () {
+            $.ajax({
+                url:'/',
+                method: 'get'
+            })
+            window.location.replace("http://localhost:8082/home/");
+        })
+    })
+
+</script>
+
+<!--restore task-->
+<script>
+    $(document).ready(function () {
+        $("#restoreBtn").click(function () {
+            alert("Task was succesfully restored. \nYou have new To-Do!");
+        });
+    });
+</script>
+
+</body>
+</html>

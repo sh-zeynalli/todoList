@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Categories</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/css/bootstrap-select.min.css">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+    <!-- DataTables JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
+
+</head>
+<body>
+
+<div class="form-group">
+
+    <h1>Categories<small> List</small></h1>
+    <button type="button" class="btn btn btn-primary" id="mainBtn">Main Page</button>
+    <button id="showCategoryModal" type="button" class="btn btn btn-primary">Add Category</button>
+
+</div>
+<div></div>
+
+<!--category table-->
+<div class="container">
+    <table class="table" id="categories"  cellpadding="0" align="center" width="80%">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Category</th>
+
+            <th scope="col">Action</th>
+            <!--<th>Start Date</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <!--<c:forEach items="${persons}" var="item">-->
+        <tr th:each="category, id: ${category}">
+            <td th:text="${id.count}"></td>
+            <td th:text="${category.name}"></td>
+            <td>
+                <button type="button" data-th-id="${category.id}" data-th-name="${category.name}"class="editBtn btn btn btn-primary" style="background: orange; border-color: inherit">
+                    <i class="far fa-edit"></i></button>
+                <a type="button" data-th-id="${category.id}" class="deleteBtn btn btn btn-primary" style="background: #ac2925; border-color: inherit"
+                   id="deleteBtn"><i class="fas fa-trash-alt"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--add category modal-->
+<div class="modal fade" id="categoryModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Category</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/addCategory}" th:object="${categoryObject}">
+
+                    <!--<label for="personId">ID</label><input th:value="*{id}" id="personId" name="id" type="number" class="form-control">-->
+                    <label for="categoryname">Category name</label><input  id="categoryname" name="task" th:value="*{name}"
+                                                          type="text" class="form-control"><br>
+
+                    <span id="emptyAddCat" style="color: red"></span>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveCategorybtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--edit_modal-->
+<div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Category</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/editCategory}" th:object="${categoryObject}">
+                    <input type="hidden" id="edit_id" value="">
+                    <input type="hidden" id="edit_name" value="">
+                    <label></label>
+                    <input id="editname" name="name" th:value="*{name}"
+                           type="text" class="form-control">
+                    <span id="empty" style="color: red"></span>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editCategorybtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--add category-->
+<script>
+    $(document).ready(function () {
+            $("#showCategoryModal").click(function () {
+                $("#emptyAddCat").html("");
+                $('#categoryModal').modal('show');
+
+            });
+            $('#saveCategorybtn').click(function () {
+                // var id=$('#personId').val();
+                var name = $('#categoryname').val();
+                $.ajax({
+                    url: 'addCategory',
+                    method: 'post',
+                    data: 'name=' + name,
+                    dataType: 'json',
+                    success: function (response) {
+
+                        if(response.code==200){
+                            alert(response.message);
+                            window.location.reload();
+                        }
+                        else
+                        {
+                            $("#emptyAddCat").html(response.message);
+                        }
+                    }
+                    ,
+                    error: function(res) {
+                        console.log("ajax error");
+                    }
+
+                })
+            })
+        }
+    )
+</script>
+
+<!--edit_category-->
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".editBtn", function () {
+
+            $("#empty").html("");
+
+            var edit_id = $(this).attr('id');
+            $(".modal-body #edit_id").val(edit_id);
+
+            var edit_name = $(this).attr('name');
+            $(".modal-body #edit_name").val(edit_name);
+            $("#editname").val(edit_name);
+
+            $("#editModal").modal('show');
+
+        });
+        $("#editCategorybtn").click(function () {
+
+            var editid = $('#edit_id').val();
+            var editname = $('#editname').val();
+
+            $.ajax({
+                url: 'editCategory',
+                method: 'get',
+                data:'id='+editid+'&name='+editname,
+                dataType:'json',
+                success: function (response) {
+
+                    if(response.code==200){
+                        alert(response.message)
+                        window.location.reload();
+                    }
+                    else
+                    {
+                        $("#empty").html(response.message);
+                    }
+                },
+                error: function(res) {
+                    console.log("ajax error");
+                }
+            })
+        })
+    });
+</script>
+
+<!--main page-->
+<script>
+    $(document).ready(function () {
+        $("#mainBtn").click( function () {
+
+            $.ajax({
+                url:'/',
+                method: 'get'
+            })
+            window.location.replace("http://localhost:8082/home/");
+        })
+    })
+
+</script>
+
+<!--category_delete-->
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".deleteBtn", function () {
+            var c_id = $(this).attr('id');
+            $(".modal-body #catId").val(c_id);
+            $("#deleteModal").modal('show');
+        });
+        $("#delselectedCategory").click(function () {
+
+            var id = $('#catId').val();
+            console.log(id);
+            $.get("/home/categories/deleteCategory/" + id, function (data) {
+                location.reload();
+            })
+        });
+    })
+</script>
+
+<!--delete_modal-->
+<div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <input type="hidden" name="">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Warning</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/delete}">
+                    <input type="hidden" id="catId" value="">
+                    <label>Tasks related to this category will be deleted! <br> Are you sure you want to delete this category?</label><br>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-danger" data-dismiss="modal"
+                   id="delselectedCategory">Delete anyway</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--delete_modal-->
+<!--<div class="modal fade" id="deleteModal" role="dialog">-->
+    <!--<div class="modal-dialog">-->
+         <!--Modal content-->
+        <!--<div class="modal-content">-->
+            <!--<input type="hidden" name="">-->
+            <!--<div class="modal-header">-->
+                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                <!--<h4 class="modal-title">Confirmation</h4>-->
+            <!--</div>-->
+            <!--<div class="modal-body">-->
+                <!--<form method="post" th:action="@{/delete}">-->
+                    <!--<input type="hidden" id="todo_id" value="">-->
+
+                    <!--&lt;!&ndash;<label for="personId">ID</label><input th:value="*{id}" id="personId" name="id" type="number" class="form-control">&ndash;&gt;-->
+                    <!--<label>You have task(s) related to this category. <br> If you delete this category, task(s) will be removed. <br> Press delete to continue or edit your task</label><br>-->
+                <!--</form>-->
+            <!--</div>-->
+            <!--<div class="modal-footer">-->
+                <!--<a type="button" class="btn btn-danger" data-dismiss="modal"-->
+                   <!--id="delselectedTodo">Delete</a>-->
+                <!--<button type="button" class="btn btn-default" data-dismiss="modal">Edit task</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+</body>
+</html>
