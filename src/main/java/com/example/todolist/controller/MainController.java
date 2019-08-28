@@ -9,24 +9,13 @@ import com.example.todolist.persistance.service.PriorityServiceImpl;
 import com.example.todolist.persistance.service.TodoListService;
 import com.example.todolist.search.SearchReq;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.validation.Valid;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+
 
 @Controller
 public class MainController {
@@ -56,13 +45,12 @@ public class MainController {
         return modelAndView;
     }
 
-
     @PostMapping(value = "/addTodo")
     @ResponseBody
     public Response addTodo(@ModelAttribute @Valid TodoListDto todoListDto, BindingResult errors) {
 
         Response myResponse = new Response();
-        System.out.println(errors.hasErrors());
+
         System.out.println(todoListDto);
 
 
@@ -97,55 +85,20 @@ public class MainController {
     }
 
     @GetMapping(value = "/search")
-    public Response search(@RequestBody SearchReq input){
+    @ResponseBody
+    public ModelAndView search(@ModelAttribute SearchReq input, ModelAndView view){
 
-        System.out.println(input);
-        return  new Response();
+        view.addObject("todo", new TodoListDto());
+        view.addObject("searchList", todoListService.findAll(input));
+        view.setViewName("index");
+        System.out.println(todoListService.findAll(input));
+        return  view;
     }
-
-//    @GetMapping(value = "/search")
-//    public String search(ModelAndView modelAndView, String task, String priority, String category, String deadline){
-//        System.out.println("aaaaaaaaaaaa");
-//
-//        Date date=new Date();
-//        try {
-//            date = new SimpleDateFormat("MM/dd/yyyy").parse(deadline);
-//        } catch (ParseException e) {
-//
-//            try {
-//                date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deadline);
-//            } catch (ParseException e1) {
-//
-//            }
-//        }
-//
-//        List<TodoListDto> searchResult = todoListService.advancedSearch(task, priority, category, date);
-//
-//        System.out.println(searchResult);
-//        return "index";
-//    }
 
     @ResponseBody
     @Transactional
     @GetMapping(value = "/editTodo")
     public Response editTodo(@ModelAttribute @Valid TodoListDto updatedDto, BindingResult errors) {
-
-        System.out.println(updatedDto.getDeadline());
-        Date date = new Date();
-
-        try {
-            date = new SimpleDateFormat("MM/dd/yyyy").parse(updatedDto.getDeadline().toString());
-        } catch (ParseException e) {
-
-            try {
-                date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updatedDto.getDeadline().toString());
-            } catch (ParseException e1) {
-
-            }
-        }
-
-        updatedDto.setDeadline(date);
-        System.out.println(updatedDto);
 
         Response myResponse = new Response();
 

@@ -36,14 +36,12 @@ public class PriorityController {
 
     @RequestMapping(value = "/priorities", method = RequestMethod.GET)
     public ModelAndView priority(ModelAndView modelAndView) {
-        System.out.println("priority");
 
         modelAndView.addObject("todo", new TodoListDto());
         modelAndView.addObject("todoList", todoListService.findAll());
         modelAndView.addObject("priorityObject", new PriorityDto());
         modelAndView.addObject("priority", priorityDtoList());
         modelAndView.setViewName("priority");
-        System.out.println("priority");
         return modelAndView;
     }
 

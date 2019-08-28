@@ -40,7 +40,7 @@ public class CategoryController {
     @RequestMapping(value = "/categories/addCategory", method = RequestMethod.POST)
     @ResponseBody
     public Response addCategory(@ModelAttribute @Valid CategoryDto categoryDto, BindingResult errors) {
-        System.out.println("dddddddddd");
+
         Response myResponse=new Response();
         if (!errors.hasErrors()) {
             categoryService.save(categoryDto);
@@ -50,7 +50,6 @@ public class CategoryController {
         } else {
             myResponse.setMessage("Please add category");
             myResponse.setCode(500);
-            System.out.println(myResponse.getCode() + " " + myResponse.getMessage());
         }
 
         return myResponse;

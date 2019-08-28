@@ -78,8 +78,8 @@
                        style="width: 100px; font-style: italic">
             </td>
             <td>
-                <input placeholder="deadline" id="searchDeadline" class="form-control date-picker-popup" type="date"
-                       style="width: 135px; font-style: italic ">
+                <input placeholder="deadline" id="searchDeadline" class="form-control date-picker" type="date"
+                       style="width: 140px; font-style: italic ">
             </td>
             <td>
                 <button id="searchBtn" type="button" class="btn btn btn-primary" text="Search"
@@ -88,13 +88,13 @@
                 </button>
             </td>
         </tr>
-        <tr th:each="todoList, id: ${todoList}" align="center">
+        <tr th:each="todoList, id: ${todoList}" align="center" th:object="${todo}">
             <!--new: th:class id.count id.index-->
             <td th:unless="${ todoList.status}" th:text="${id.count}"></td>
             <td th:unless="${ todoList.status}" th:text="${todoList.task}"></td>
             <td th:unless="${ todoList.status}" th:text="${todoList.priority}"></td>
             <td th:unless="${ todoList.status}" th:text="${todoList.category}"></td>
-            <td th:unless="${ todoList.status}" th:text="${todoList.deadline}" data-th-date="${todoList.deadline}"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.deadline}" data-th-date="${todoList.deadline}" data-pattern="dd-MM-yyyy"></td>
             <td th:unless="${ todoList.status}">
                 <a th:href="@{/done/{id}(id=${todoList.id})}" type="button" class="btn btn btn-primary"
                    style="background: forestgreen; border-color: inherit"
@@ -333,6 +333,7 @@
                 var edit_deadline = $(this).attr('deadline');
                 $("#editDate").datepicker();
                 $("#editDate").val(edit_deadline);
+                console.log(typeof edit_deadline)
 
             });
 
@@ -344,7 +345,7 @@
                 var d = new Date($('#editDate').val());
                 var editdueDate = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
 
-                console.log(editdueDate);
+                console.log(typeof editdueDate);
 
                 $.ajax({
 
@@ -407,20 +408,27 @@
                 var task = $('#searchTask').val();
                 var priority = $('#searchPriority').val();
                 var category = $('#searchCategory').val();
-                //var dueDate=$('#searchDeadline').val();
-                var d = new Date($('#searchDeadline').val());
-                var dueDate = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
-
-                console.log(task + " ," + priority + " ," + category + " ," + dueDate);
-                console.log(typeof  dueDate);
+                if($('#searchDeadline').val()==""){
+                    $('#searchDeadline').val("3030-12-12");
+                    var d = new Date($('#searchDeadline').val());
+                    var dueDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+                }
+                else {
+                    var d = new Date($('#searchDeadline').val());
+                    var dueDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+                }
                 $.ajax({
 
                     url: 'search',
                     method: 'get',
-                    data: 'task=' + task + '&priority=' + priority + '&category=' + category + '&deadline=' + dueDate,
-                    dataType: 'json',
-                    success: function () {
-                        window.location.reload();
+                    data: 'task=' + task + '&priority=' + priority + '&category=' + category + '&date=' + dueDate,
+                    success: function (/*response*/) {
+                       /* if (response.code == 200) {*/
+                            //window.location.reload();
+                       /* }
+                        else {
+                            console.log("search error")
+                        }*/
                     }
                     ,
                     error: function () {

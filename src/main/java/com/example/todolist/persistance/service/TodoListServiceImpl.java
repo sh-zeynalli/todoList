@@ -16,11 +16,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -138,8 +138,44 @@ public class TodoListServiceImpl implements TodoListService {
     public List<TodoListDto> findAll(SearchReq searchReq) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-//        CriteriaQuery<TodoList> criteriaQuery = criteriaBuilder.
-        return null;
+        CriteriaQuery<TodoList> criteriaQuery = criteriaBuilder.createQuery(TodoList.class);
+        Root<TodoList> root = criteriaQuery.from(TodoList.class);
+        Join<TodoList, Priority> priorityJoin = root.join("priority", JoinType.LEFT);
+        Join<TodoList, Category> categoryJoin = root.join("category", JoinType.LEFT);
+
+        List<Predicate> conditions = new ArrayList<>();
+
+        if(searchReq.getTask()!="") {
+            Predicate task = criteriaBuilder.equal(root.get("task"), searchReq.getTask());
+            conditions.add(task);
+        }
+        if(searchReq.getCategory()!="") {
+            Predicate category = criteriaBuilder.equal(categoryJoin.get("name"), searchReq.getCategory());
+            conditions.add(category);
+        }
+        if(searchReq.getPriority()!="") {
+            Predicate priority = criteriaBuilder.equal(priorityJoin.get("name"), searchReq.getPriority());
+            conditions.add(priority);
+        }
+        if(!searchReq.getDate().equals(LocalDateTime.now())) {
+            Predicate date = criteriaBuilder.lessThan(root.get("deadline"), searchReq.getDate());
+            conditions.add(date);
+        }
+
+        criteriaQuery.where(conditions.toArray(new Predicate [conditions.size()]));
+
+        List<TodoList> list= em.createQuery(criteriaQuery).getResultList();
+
+        List<TodoListDto> todoListDtos = list.stream().map(t -> new TodoListDto(
+                t.getId(),
+                t.getTask(),
+                t.getPriority().getName(),
+                t.getCategory().getName(),
+                t.getDeadline(),
+                t.getStatus()
+        )).collect(Collectors.toList());
+
+        return todoListDtos;
     }
 
 

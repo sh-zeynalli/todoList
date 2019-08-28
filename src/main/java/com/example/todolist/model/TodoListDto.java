@@ -31,7 +31,7 @@ public class TodoListDto {
     private String category;
 
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //new
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd-MM-yyyy") //new
     private Date deadline;
 
     public TodoListDto(Long id, String task, String priority, String category, Date deadline,  Integer status) {
