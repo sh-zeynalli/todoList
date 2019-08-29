@@ -149,6 +149,12 @@ public class TodoListServiceImpl implements TodoListService {
             Predicate task = criteriaBuilder.equal(root.get("task"), searchReq.getTask());
             conditions.add(task);
         }
+
+        if(searchReq.getStatus()!=1) {
+            Predicate status = criteriaBuilder.equal(root.get("status"), searchReq.getStatus());
+            conditions.add(status);
+        }
+
         if(searchReq.getCategory()!="") {
             Predicate category = criteriaBuilder.equal(categoryJoin.get("name"), searchReq.getCategory());
             conditions.add(category);

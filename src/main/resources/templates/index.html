@@ -49,6 +49,7 @@
 
 <!--main_table-->
 <div class="container">
+    <div id="taskListDivId">
     <table class="table" id="todo_list" cellpadding="0" align="center" width="80%">
         <thead class="thead-dark">
         <tr>
@@ -94,7 +95,8 @@
             <td th:unless="${ todoList.status}" th:text="${todoList.task}"></td>
             <td th:unless="${ todoList.status}" th:text="${todoList.priority}"></td>
             <td th:unless="${ todoList.status}" th:text="${todoList.category}"></td>
-            <td th:unless="${ todoList.status}" th:text="${todoList.deadline}" data-th-date="${todoList.deadline}" data-pattern="dd-MM-yyyy"></td>
+            <td th:unless="${ todoList.status}" th:text="${todoList.deadline}" data-th-date="${todoList.deadline}"
+                data-pattern="dd-MM-yyyy"></td>
             <td th:unless="${ todoList.status}">
                 <a th:href="@{/done/{id}(id=${todoList.id})}" type="button" class="btn btn btn-primary"
                    style="background: forestgreen; border-color: inherit"
@@ -113,6 +115,7 @@
         </tr>
         </tbody>
     </table>
+    </div>
     <div style="text-align: center;">
     <span th:text="${message}" style="
           font-size: x-large;
@@ -404,31 +407,27 @@
 <script>
     $(document).ready(function () {
             $("#searchBtn").click(function () {
-
                 var task = $('#searchTask').val();
                 var priority = $('#searchPriority').val();
                 var category = $('#searchCategory').val();
-                if($('#searchDeadline').val()==""){
+                if ($('#searchDeadline').val() == "") {
                     $('#searchDeadline').val("3030-12-12");
                     var d = new Date($('#searchDeadline').val());
                     var dueDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+                    //$('#searchDeadline').detach().attr('type', 'text');
+                    $('#searchDeadline').val("");
                 }
                 else {
                     var d = new Date($('#searchDeadline').val());
                     var dueDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
                 }
                 $.ajax({
-
                     url: 'search',
                     method: 'get',
                     data: 'task=' + task + '&priority=' + priority + '&category=' + category + '&date=' + dueDate,
-                    success: function (/*response*/) {
-                       /* if (response.code == 200) {*/
-                            //window.location.reload();
-                       /* }
-                        else {
-                            console.log("search error")
-                        }*/
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#taskListDivId').html(data);
                     }
                     ,
                     error: function () {
@@ -439,6 +438,7 @@
         }
     )
 </script>
+
 <!--category_page-->
 <script>
     $(document).ready(function () {

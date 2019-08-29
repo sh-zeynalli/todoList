@@ -2,13 +2,10 @@ package com.example.todolist.controller;
 
 import com.example.todolist.handling.exception.Response;
 import com.example.todolist.model.CategoryDto;
-import com.example.todolist.model.PriorityDto;
 import com.example.todolist.model.TodoListDto;
 import com.example.todolist.persistance.service.CategoryServiceImpl;
-import com.example.todolist.persistance.service.PriorityServiceImpl;
 import com.example.todolist.persistance.service.TodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;

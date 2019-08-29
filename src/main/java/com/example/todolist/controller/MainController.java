@@ -8,6 +8,7 @@ import com.example.todolist.persistance.service.CategoryServiceImpl;
 import com.example.todolist.persistance.service.PriorityServiceImpl;
 import com.example.todolist.persistance.service.TodoListService;
 import com.example.todolist.search.SearchReq;
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 
 
 @Controller
@@ -84,14 +87,13 @@ public class MainController {
         return modelAndView;
     }
 
-    @GetMapping(value = "/search")
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView search(@ModelAttribute SearchReq input, ModelAndView view){
-
+    public  ModelAndView  search(@ModelAttribute SearchReq input, ModelAndView view){
+        List<TodoListDto> list = todoListService.findAll(input);
+        view.addObject("todoListSearch", list);
         view.addObject("todo", new TodoListDto());
-        view.addObject("searchList", todoListService.findAll(input));
-        view.setViewName("index");
-        System.out.println(todoListService.findAll(input));
+        view.setViewName("search");
         return  view;
     }
 
@@ -120,7 +122,6 @@ public class MainController {
         }
         return myResponse;
     }
-
 
 }
 

@@ -16,6 +16,7 @@ public class SearchReq {
                 ", priority='" + priority + '\'' +
                 ", date=" + date +
                 ", category='" + category + '\'' +
+                ", status=" + status +
                 '}';
     }
 
@@ -31,6 +32,15 @@ public class SearchReq {
     private Date date;
     private String category;
 
+    private int status=0;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public String getTask() {
         return task;
@@ -47,7 +57,6 @@ public class SearchReq {
     public void setPriority(String priority) {
         this.priority = priority;
     }
-
 
     public String getCategory() {
         return category;
