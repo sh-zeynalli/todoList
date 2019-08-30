@@ -35,6 +35,8 @@ public interface TodoListService {
 
     public String noTaskInfo();
 
+    public String noSearchResult(SearchReq searchReq);
+
 
 //    public List<String> checkNull(TodoListDto dto);
     }

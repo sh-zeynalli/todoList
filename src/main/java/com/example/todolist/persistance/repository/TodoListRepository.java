@@ -31,10 +31,6 @@ public interface TodoListRepository extends JpaRepository<TodoList, Long> {
     @Query(value = "select t from TodoList t where t.category=:category")
     public List<TodoList> findByCategory(@Param("category") Category category);
 
-
-    @Query(value="select t.task, t.priority, t.category, t.deadline from TodoList t where task=:task and t.priority=:priority  and t.category=:category  and t.deadline=:deadline  ")
-    public List<TodoList> advancedSearch(@Param("task") String task, @Param("priority") Priority priority, @Param("category") Category category, @Param("deadline") Date deadline);
-
     @Modifying
     @Query("update TodoList t set t.task =:task, t.priority =:priority, t.category = :category, t.deadline =:deadline, t.status =:status  where t.id = :id")
     public void update(@Param("id") Long id, @Param("task") String task, @Param("priority") Priority priority, @Param("category") Category category, @Param("deadline") Date deadline, @Param("status") Integer status);

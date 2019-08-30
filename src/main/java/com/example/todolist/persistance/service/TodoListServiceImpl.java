@@ -118,6 +118,16 @@ public class TodoListServiceImpl implements TodoListService {
         return message;
     }
 
+    @Override
+    public String noSearchResult(SearchReq searchReq) {
+      String message=null;
+       if(searchReq.getTask().isEmpty()){
+           message="No results.\nWe couldn't find anything related to your search.";
+       }
+       return message;
+    }
+
+
 
     @Override
     public List<TodoListDto> findAll() {

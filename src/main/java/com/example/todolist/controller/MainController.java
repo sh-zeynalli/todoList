@@ -94,6 +94,7 @@ public class MainController {
         view.addObject("todoListSearch", list);
         view.addObject("todo", new TodoListDto());
         view.setViewName("search");
+        view.addObject("noResult", todoListService.noSearchResult(input));
         return  view;
     }
 
