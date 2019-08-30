@@ -8,7 +8,6 @@ import com.example.todolist.persistance.service.CategoryServiceImpl;
 import com.example.todolist.persistance.service.PriorityServiceImpl;
 import com.example.todolist.persistance.service.TodoListService;
 import com.example.todolist.search.SearchReq;
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 
 
